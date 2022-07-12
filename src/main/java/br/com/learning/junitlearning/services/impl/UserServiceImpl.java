@@ -4,6 +4,7 @@ import br.com.learning.junitlearning.domain.User;
 import br.com.learning.junitlearning.domain.dto.UserDTO;
 import br.com.learning.junitlearning.repositories.UserRepository;
 import br.com.learning.junitlearning.services.UserService;
+import br.com.learning.junitlearning.services.exceptions.DataIntegratyViolationException;
 import br.com.learning.junitlearning.services.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(UserDTO userDTO) {
+        findByEmail(userDTO);
         return repository.save(mapper.map(userDTO, User.class));
+    }
+
+    private void findByEmail(UserDTO userDTO) {
+        Optional<User> user = repository.findByEmail(userDTO.getEmail());
+        if(user.isPresent()) {
+            throw new DataIntegratyViolationException("Email já cadastrado no sistema");
+        }
     }
 
 }
