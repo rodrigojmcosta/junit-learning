@@ -3,6 +3,7 @@ package br.com.learning.junitlearning.services.impl;
 import br.com.learning.junitlearning.domain.User;
 import br.com.learning.junitlearning.domain.dto.UserDTO;
 import br.com.learning.junitlearning.repositories.UserRepository;
+import br.com.learning.junitlearning.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,6 +24,7 @@ class UserServiceImplTest {
     public static final String NAME = "Valdir";
     public static final String EMAIL = "valdir@mail.com";
     public static final String PASSWORD = "123";
+    public static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado";
 
     @InjectMocks
     private UserServiceImpl service;
@@ -54,6 +56,18 @@ class UserServiceImplTest {
         assertEquals(ID, response.getId());
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
+    }
+
+    @Test
+    void whenFindByIdThenReturnObjectNotFoundException() {
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException(OBJETO_NAO_ENCONTRADO));
+
+        try {
+            service.findById(ID);
+        } catch (Exception ex) {
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals(OBJETO_NAO_ENCONTRADO, ex.getMessage());
+        }
     }
 
     @Test
