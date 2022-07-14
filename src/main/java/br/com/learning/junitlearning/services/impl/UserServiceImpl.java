@@ -4,7 +4,7 @@ import br.com.learning.junitlearning.domain.User;
 import br.com.learning.junitlearning.domain.dto.UserDTO;
 import br.com.learning.junitlearning.repositories.UserRepository;
 import br.com.learning.junitlearning.services.UserService;
-import br.com.learning.junitlearning.services.exceptions.DataIntegratyViolationException;
+import br.com.learning.junitlearning.services.exceptions.DataIntegrityViolationException;
 import br.com.learning.junitlearning.services.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
     private void findByEmail(UserDTO userDTO) {
         Optional<User> user = repository.findByEmail(userDTO.getEmail());
         if (user.isPresent() && !user.get().getId().equals(userDTO.getId())) {
-            throw new DataIntegratyViolationException("E-mail já cadastrado no sistema");
+            throw new DataIntegrityViolationException("E-mail já cadastrado no sistema");
         }
     }
 
